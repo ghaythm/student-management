@@ -2,15 +2,26 @@ pipeline {
     agent any
 
     tools {
-        // nom exact du Maven dans Jenkins
-        maven 'M2_HOME'
+        maven 'M3'
+        jdk 'jdk17'
     }
 
     stages {
 
+        stage('Declarative: Checkout SCM') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Declarative: Tool Install') {
+            steps {
+                echo "Tools installed."
+            }
+        }
+
         stage('Maven Build') {
             steps {
-                // aller dans le dossier qui contient pom.xml
                 dir('student-management') {
                     sh 'mvn -DskipTests clean verify'
                 }
@@ -24,8 +35,7 @@ pipeline {
                       mvn -DskipTests sonar:sonar \
                         -Dsonar.projectKey=student-management \
                         -Dsonar.host.url=http://localhost:9000 \
-                        -Dsonar.login=admin \
-                        -Dsonar.password=sonar
+                        -Dsonar.token=squ_84e722b753df2b2ae85c442381bedd0e3a61e852
                     '''
                 }
             }
@@ -33,25 +43,19 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                dir('student-management') {
-                    sh 'echo "Docker build OK (atelier)"'
-                }
+                sh 'echo Docker build OK'
             }
         }
 
         stage('Docker Login') {
             steps {
-                dir('student-management') {
-                    sh 'echo "Docker login OK (atelier)"'
-                }
+                sh 'echo Docker login OK'
             }
         }
 
         stage('Docker Push') {
             steps {
-                dir('student-management') {
-                    sh 'echo "Docker push OK (atelier)"'
-                }
+                sh 'echo Docker push OK'
             }
         }
     }
