@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+
+    tools {
+        // Mets ici le nom du Maven que tu as configuré dans Jenkins
+        // (souvent "M3" ou "Maven_3")
+        maven 'M3'
+    }
+
+    stages {
+
+        stage('Maven Build') {
+            steps {
+                sh 'mvn clean verify'
+            }
+        }
+
+        stage('MVN SONARQUBE') {
+            steps {
+                sh '''
+                  mvn sonar:sonar \
+                    -Dsonar.projectKey=student-management \
+                    -Dsonar.host.url=http://localhost:9000 \
+                    -Dsonar.login=admin \
+                    -Dsonar.password=sonar
+                '''
+            }
+        }
+
+        // Les 3 stages ci-dessous servent juste à avoir
+        // le même Stage View que sur la capture (Docker en rouge).
+        // S’ils échouent ce n’est PAS grave pour l’atelier SonarQube.
+
+        stage('Docker Build') {
+            steps {
+                sh 'echo "Simulation Docker Build" && exit 1'
+            }
+        }
+
+        stage('Docker Login') {
+            steps {
+                sh 'echo "Simulation Docker Login" && exit 1'
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                sh 'echo "Simulation Docker Push" && exit 1'
+            }
+        }
+    }
+}
