@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        // NOM EXACT de Maven dans Jenkins (d’après ton erreur: M2_HOME)
+        // nom exact du Maven configuré dans Jenkins
         maven 'M2_HOME'
     }
 
@@ -10,7 +10,7 @@ pipeline {
 
         stage('Maven Build') {
             steps {
-                dir('student-management') {   // <-- aller dans le dossier du projet
+                dir('student-management') {
                     sh 'mvn clean verify'
                 }
             }
@@ -18,7 +18,7 @@ pipeline {
 
         stage('MVN SONARQUBE') {
             steps {
-                dir('student-management') {   // <-- pareil ici
+                dir('student-management') {
                     sh '''
                       mvn sonar:sonar \
                         -Dsonar.projectKey=student-management \
@@ -30,7 +30,6 @@ pipeline {
             }
         }
 
-        // Stages Docker juste pour avoir des blocs rouges
         stage('Docker Build') {
             steps {
                 dir('student-management') {
@@ -60,3 +59,8 @@ pipeline {
                       echo "Fake Docker push pour l atelier"
                       exit 1
                     '''
+                }
+            }
+        }
+    }
+}
