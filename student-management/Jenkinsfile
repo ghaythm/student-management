@@ -1,55 +1,62 @@
 pipeline {
     agent any
 
-   tools {
-    maven 'M2_HOME'
-}
-
+    tools {
+        // NOM EXACT de Maven dans Jenkins (d’après ton erreur: M2_HOME)
+        maven 'M2_HOME'
+    }
 
     stages {
+
         stage('Maven Build') {
             steps {
-                sh 'mvn clean verify'
+                dir('student-management') {   // <-- aller dans le dossier du projet
+                    sh 'mvn clean verify'
+                }
             }
         }
 
         stage('MVN SONARQUBE') {
             steps {
-                sh '''
-                  mvn sonar:sonar \
-                    -Dsonar.projectKey=student-management \
-                    -Dsonar.host.url=http://localhost:9000 \
-                    -Dsonar.login=admin \
-                    -Dsonar.password=sonar
-                '''
+                dir('student-management') {   // <-- pareil ici
+                    sh '''
+                      mvn sonar:sonar \
+                        -Dsonar.projectKey=student-management \
+                        -Dsonar.host.url=http://localhost:9000 \
+                        -Dsonar.login=admin \
+                        -Dsonar.password=sonar
+                    '''
+                }
             }
         }
 
+        // Stages Docker juste pour avoir des blocs rouges
         stage('Docker Build') {
             steps {
-                sh '''
-                  echo "Fake Docker build pour l atelier"
-                  exit 1
-                '''
+                dir('student-management') {
+                    sh '''
+                      echo "Fake Docker build pour l atelier"
+                      exit 1
+                    '''
+                }
             }
         }
 
         stage('Docker Login') {
             steps {
-                sh '''
-                  echo "Fake Docker login pour l atelier"
-                  exit 1
-                '''
+                dir('student-management') {
+                    sh '''
+                      echo "Fake Docker login pour l atelier"
+                      exit 1
+                    '''
+                }
             }
         }
 
         stage('Docker Push') {
             steps {
-                sh '''
-                  echo "Fake Docker push pour l atelier"
-                  exit 1
-                '''
-            }
-        }
-    }
-}
+                dir('student-management') {
+                    sh '''
+                      echo "Fake Docker push pour l atelier"
+                      exit 1
+                    '''
