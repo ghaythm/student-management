@@ -2,14 +2,10 @@ pipeline {
     agent any
 
     tools {
-        // IMPORTANT : mets ici le NOM EXACT de ton Maven dans Jenkins
-        // Manage Jenkins -> Global Tool Configuration -> Maven installations
-        // Par ex : 'M3' ou 'Maven_3'
-        maven 'M3'
+        maven 'M3'   // mets ici le NOM EXACT de Maven dans Jenkins
     }
 
     stages {
-
         stage('Maven Build') {
             steps {
                 sh 'mvn clean verify'
@@ -28,13 +24,10 @@ pipeline {
             }
         }
 
-        // Les 3 stages suivants sont JUSTE pour avoir les blocs rouges
-        // comme sur la capture. On force l'échec avec "exit 1".
-
         stage('Docker Build') {
             steps {
                 sh '''
-                  echo "Fake Docker build pour l atelier SonarQube"
+                  echo "Fake Docker build pour l atelier"
                   exit 1
                 '''
             }
@@ -43,7 +36,7 @@ pipeline {
         stage('Docker Login') {
             steps {
                 sh '''
-                  echo "Fake Docker login pour l atelier SonarQube"
+                  echo "Fake Docker login pour l atelier"
                   exit 1
                 '''
             }
@@ -52,7 +45,7 @@ pipeline {
         stage('Docker Push') {
             steps {
                 sh '''
-                  echo "Fake Docker push pour l atelier SonarQube"
+                  echo "Fake Docker push pour l atelier"
                   exit 1
                 '''
             }
