@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     tools {
-        maven 'M3'
-        jdk 'jdk17'
+        // Nom EXACT de Maven dans Jenkins
+        maven 'M2_HOME'
     }
 
     stages {
