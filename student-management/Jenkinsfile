@@ -1,9 +1,10 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'M3'   // mets ici le NOM EXACT de Maven dans Jenkins
-    }
+   tools {
+    maven 'M2_HOME'
+}
+
 
     stages {
         stage('Maven Build') {
