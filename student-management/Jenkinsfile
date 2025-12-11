@@ -2,60 +2,45 @@ pipeline {
     agent any
 
     tools {
-        // Nom EXACT de Maven dans Jenkins
-        maven 'M2_HOME'
+        maven "M3"
+        jdk "jdk17"
+    }
+
+    environment {
+        dockerImage = "gayth/student-management"
     }
 
     stages {
 
-        stage('Declarative: Checkout SCM') {
+        stage('Checkout') {
             steps {
                 checkout scm
             }
         }
 
-        stage('Declarative: Tool Install') {
-            steps {
-                echo "Tools installed."
-            }
-        }
-
         stage('Maven Build') {
             steps {
-                dir('student-management') {
-                    sh 'mvn -DskipTests clean verify'
-                }
-            }
-        }
-
-        stage('MVN SONARQUBE') {
-            steps {
-                dir('student-management') {
-                    sh '''
-                      mvn -DskipTests sonar:sonar \
-                        -Dsonar.projectKey=student-management \
-                        -Dsonar.host.url=http://localhost:9000 \
-                        -Dsonar.token=squ_84e722b753df2b2ae85c442381bedd0e3a61e852
-                    '''
-                }
+                sh 'mvn -DskipTests clean package'
             }
         }
 
         stage('Docker Build') {
             steps {
-                sh 'echo Docker build OK'
+                sh 'docker build -t ${dockerImage}:latest .'
             }
         }
 
         stage('Docker Login') {
             steps {
-                sh 'echo Docker login OK'
+                withCredentials([string(credentialsId: "dockerhub-pass", variable: "DOCKER_PASS")]) {
+                    sh 'echo $DOCKER_PASS | docker login -u gayth --password-stdin'
+                }
             }
         }
 
         stage('Docker Push') {
             steps {
-                sh 'echo Docker push OK'
+                sh 'docker push ${dockerImage}:latest'
             }
         }
     }
